@@ -76,6 +76,18 @@ Messaging System
 
 <h2>로그인페이지</h2>
 
+<img src=https://github.com/moyasiru/Green/assets/130022940/d8c52904-c6ef-4988-94e2-491c8011c9df width="80%">
 
-https://github.com/moyasiru/Green/assets/130022940/d4d39773-8a11-4cb4-8163-fd18c1b9989c
+* 로그인 화면
+   - 간단한 로그인,회원가입폼 으로 구성했습니다.
+
+<h2>메인페이지</h2>
+
+<img src=https://github.com/moyasiru/Green/assets/130022940/03cf33c5-9789-4ca0-8bc1-d8a2be518dbb width="80%">
+
+* 메인 화면
+   - amchart와 db연동하여 차트구현
+   - Slick 플러그인 이용하여 사진 슬라이더 구현
+   - Jsoub 이용하여 웹페이지 크롤링
+   - 동적쿼리 사용하여 카테고리별 검색기능 구현
 
