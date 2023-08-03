@@ -212,9 +212,43 @@ Messaging System
 
 <h2>관리자 페이지</h2> 
 
+
+<br>
+
+
 ![image](https://github.com/moyasiru/Green/assets/130022940/119d78b2-22cc-4d86-ba73-dafb37cc699f)
 
 
 <br>
 
 * 관리자 세션일시 해당 관리 페이지로 이동 가능
+
+
+<br>
+
+
+<h2>반납 확인 목록</h2> 
+
+
+<br>
+
+
+<img src=https://github.com/moyasiru/Green/assets/130022940/106b67f6-79ee-4852-8005-e609585eb8f3 width="40%">
+<img src=https://github.com/moyasiru/Green/assets/130022940/d22b3f7f-fa1a-4d28-8d35-6e2e0433fb58 width="50%">
+
+<br>
+
+
+<img src=https://github.com/moyasiru/Green/assets/130022940/c2327288-1dce-4b4b-8264-bdce9212a8f9 width="30%">
+
+
+<br><br>
+
+
+* 반납 확인이 되면 반납확인 버튼 클릭후 도서반납처리
+* 반납 처리 후 Y로 도서반납여부 변경, 반납확인 버튼 사라지게 구현
+* 반납완료 정리버튼 클릭시 반납이 처리된 정보들 없어지도록 구현
+* 해당 db삭제
+
+
+
