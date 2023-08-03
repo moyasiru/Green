@@ -7,6 +7,12 @@
 [강태현개인프로젝트.pptx](https://github.com/moyasiru/Green/files/12246482/default.pptx)
 
 
+<br><br>
+
+
+관련 노션 주소입니다.
+
+https://www.notion.so/Project-Green-74880dda821c4791850e9209a291bb40?pvs=4
 ><h1>프로젝트 소개</h1>
 
 
