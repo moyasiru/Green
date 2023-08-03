@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.tab img{
+	width: 300px;
+	height: 200px;
+}
+.div_page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.div_page ul {
+	display: flex;
+	list-style: none;
+}
+li{
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+<div align="center">
+	<table border="1" class="tab">
+		<tr>
+			<td>도서일련번호</td>
+			<td>도서명</td>
+			<td>작가</td>
+			<td>사진</td>
+			<td>등록일</td>
+			<td>설명</td>
+		</tr>
+			<tr th:each="dto : ${book_search}">
+				<td th:text="${dto.book_seq}"></td>
+				<td>
+  					<a th:href="@{'book_content_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}" class="move_link"></a>
+<!--   					<a th:href="@{'book_content_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}"></a> -->
+				</td>
+				<td th:text="${dto.book_author}">
+				</td>
+		   		<td>
+    				<img th:src="'/image/'+ ${dto.book_image}">
+   				</td>
+				<td th:text="${#dates.format(dto.book_date, 'yyyy-MM-dd')}"></td>
+				<td th:text="${dto.book_description}"></td>
+			</tr>
+		<tr>
+		<td colspan="6" style="text-align: right;">
+				<a th:href="@{book_list}">상품목록보기</a>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

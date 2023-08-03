@@ -1,0 +1,120 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.boot.member.mapper.BookDao">
+
+	<insert id="book_write" parameterType="hashmap">
+	  	insert into book_book(book_seq,book_cat,book_title,book_author,book_image,book_description,book_date,book_rent,book_state)
+	  			values(book_seq.NEXTVAL,#{book_cat},#{book_title},#{book_author},#{save_bookimage},#{book_description},#{book_date},'Y','대출가능')
+    </insert>
+    
+    <select id="book_list" resultType="com.boot.member.dto.BookDto">
+			<![CDATA[
+					SELECT book_seq, book_title, book_author, book_image, book_description,book_date, book_rent
+ 				FROM (
+ 				    SELECT rownum rn, book_seq, book_title, book_author, book_image, book_description,book_date, book_rent 
+ 				    FROM ( 
+ 				        SELECT book_seq, book_title, book_author, book_image, book_description,book_date, book_rent 
+				        FROM book_book
+ 				        ORDER BY book_seq DESC
+ 				    )
+ 				    WHERE rownum <= (#{pageNum} * #{amount}) 
+ 				)
+ 				WHERE rn > (#{pageNum} - 1) * #{amount}
+ 				ORDER BY book_seq desc 
+
+			]]>
+    </select>
+    
+    <select id="mainpage" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book
+    </select>
+    
+    <select id="book_getTotalCount" resultType="int">
+    	select count(*) from book_book
+    </select>
+    
+     <select id="book_contentView" parameterType="hashmap" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book where book_seq=#{book_seq}
+    </select>
+
+     <select id="book_user_view" parameterType="hashmap" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book where book_seq=#{book_seq}
+    </select>
+    
+    <update id="book_modify" parameterType="hashmap">
+   		update book_book set book_title = #{book_title}
+   						 , book_author = #{book_author}
+   						 , book_description = #{book_description}
+   						 , book_date = #{book_date}
+   						 , book_rent = #{book_rent}
+   						 where book_seq=#{book_seq}
+    </update>
+    
+<!--     관리자 상품삭제 db -->
+    <delete id="book_delete" parameterType="hashmap">
+    	delete from book_book where book_seq=#{book_seq}
+    </delete>
+    
+    <select id="bookcat_list" resultType="com.boot.member.dto.BookDto">
+    	SELECT book_cat, COUNT(*) AS count
+			FROM book_book
+			WHERE book_cat IN (1, 2, 31, 32, 33)
+			GROUP BY book_cat
+    </select>
+    
+    <update id="book_rent" parameterType="String">
+    	 update book_book set book_rent = 'N',book_state = '대출중' where book_seq = #{book_seq}
+    </update>
+    
+    <select id="search_list" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book  
+                 <if test='type == "title"'>
+					where book_title like '%'|| #{keyword} ||'%'
+				</if>
+				<if test='type == "author"'>
+					where book_author like '%'|| #{keyword} ||'%'
+				</if>
+    </select>
+    
+    <select id="book_search" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book where book_title like '%'|| #{keyword} ||'%'
+    </select>
+    
+    <select id="book_catlist" resultType="com.boot.member.dto.BookDto">
+    	select * from book_book  
+                 <if test="book_cat == 4">
+			        where book_cat = 4
+			    </if>
+			    <if test="book_cat == 3">
+			        where book_cat LIKE '%'|| 3 ||'%'
+			    </if>
+			    <if test="book_cat == 1">
+			       where book_date >=to_char(sysdate-5,'yyyy-mm-dd')
+			    </if>
+    </select>
+    <select id="book_catcount" resultType="int">
+                 <if test="book_cat == 4">
+    				select count(*) from book_book  where book_cat = 4
+			    </if>
+			    <if test="book_cat == 3">
+			        select count(*) from book_book where book_cat LIKE '%'|| 3 ||'%'
+			    </if>
+			    <if test="book_cat == 1">
+			       select count(*) from book_book where book_date >=to_char(sysdate-5,'yyyy-mm-dd')
+			    </if>
+			    <if test='type == "title"'>
+					select count(*) from book_book where book_title like '%'|| #{keyword} ||'%'
+				</if>
+				<if test='type == "author"'>
+					select count(*) from book_book where book_author like '%'|| #{keyword} ||'%'
+				</if>
+    </select>
+    
+    <select id="bookcat4image" resultType="com.boot.member.dto.BookDto">
+    	select book_image from book_book where book_cat = 4
+    </select>
+    
+</mapper>
+

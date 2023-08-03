@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+#newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+ #sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+body{
+font-family:"Times New Roman";
+background-color:#F5FFFA;
+}
+.tab img{
+	width: 500px;
+	height: 400px;
+}
+.tab{
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+	margin-top: 150px;
+	width: 1200px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+}
+.tab td{
+	height: 65px;
+}
+.tab tr:first-child{
+	border-top: none;
+	}
+	.tab tr{
+	border-top: 2px solid #a9a9a9;
+	padding: 10px;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: blue;
+	}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+.btn{
+	width:100px;
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready( function() {
+	$("#newsContainer").load("news");  
+	$("#headers").load("nav");  
+	$("#delete").hide();
+	
+var user_id = "[[${user_id}]]";
+var realid = "[[${realid}]]";
+	if(user_id == realid){
+		$("#delete").show();		
+	}
+});
+
+
+function delete_submit() {
+    var formData = new FormData($("#frm")[0]);
+
+     $.ajax({
+       url:"board_delete"
+    	,processData: false 
+        ,contentType: false
+        ,data:formData
+        ,type:"POST"
+        ,success:function(data){
+           alert("삭제 완료");
+           window.location.href = "/board_list";
+        },
+        error: function() {
+			alert("오류발생");
+
+		}
+ 
+     });
+    
+  }; 
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br>
+
+<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+</div>
+
+<form id="frm">
+	<table class="tab">
+	<input type="hidden" name="user_id" th:value=${board_content_view.user_id}>
+		<tr>
+			<td>작성자</td>
+			<td th:text="${board_content_view.user_id}"></td>
+		</tr>
+		<tr>
+			<td>게시글 이름</td>
+			<td th:text="${board_content_view.board_title}"></td>
+		</tr>
+		<tr>
+			<td>글 내용</td>
+			<td>
+				<div th:utext="${board_content_view.board_content}"></div>
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="button" value="목록보기" class="btn" onclick="location.href='board_list'">
+				<input type="button" value="삭제" class="btn"  onclick="delete_submit()" id="delete">
+			</td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

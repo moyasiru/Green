@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/new.css">
+<style type="text/css">
+body{
+font-family:"Times New Roman";
+background-color:#F5FFFA;
+}
+.tab{
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+	margin-top: 150px;
+	width: 1200px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+}
+.tab td{
+	height: 65px;
+}
+	.tab tr{
+	border-top: 2px solid #a9a9a9;
+	padding: 10px;
+	}
+	.tab tr:first-child{
+	border-top: none;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: blue;
+	}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}	
+#newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+ #sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+
+.div_page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.div_page ul {
+	display: flex;
+	list-style: none;
+}
+.div_page a{
+	color: black;
+	text-decoration: none;
+}
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">  
+$(document).ready( function() {
+
+$("#headers").load("nav");  
+$("#newsContainer").load("news");  
+
+var user_id = "[[${user_id}]]";
+
+if(!user_id){
+$("#write").hide();	
+}
+
+$.ajax({
+    url:"board_userseq"
+     ,data:{user_id:user_id}
+     ,success:function(data){
+        alert("seq 불러오기완료");
+        console.log("seq =="+data.user_seq);
+        
+        $("input[name='user_seq']").val(data.user_seq);
+     },
+     error: function() {
+		alert("오류발생");
+	}
+
+  });//end of click ajax
+  
+  
+});
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br>
+
+<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+</div>
+ <form action="board_write_check">
+	<table class="tab">
+		 <input type="hidden" name="user_seq"/>
+		<tr>
+			<td>회원번호</td>
+			<td>회원아이디</td>
+			<td>글제목</td>
+		</tr>
+		<tr th:each="dto : ${list}">
+			<td th:text="${dto.user_seq}"></td>
+			<td th:text="${dto.user_id}"></td>
+			<td>
+  				<a th:href="@{'board_content_view?book_seq=' + ${dto.board_title}}" th:text="${dto.board_title}" class="move_link"></a>
+			</td>
+		</tr>
+		<tr id="write">
+			<td colspan="3">
+			<button type="submit" class="btn">글쓰러 가기</button>
+			</td>
+		</tr>
+	</table>
+</form>
+	<div class="div_page">
+	    <ul>
+	        <li class="paginate_button" th:if="${pageMaker.prev}">
+	            <!-- 시작페이지 - 1 하면 이전의 10개 페이지 표시 -->
+	            <!-- ex>11->10(1~10), 21->20(11~20) -->
+	            <a th:href="@{${pageMaker.startPage - 1}}" th:text="[Previous]"></a>
+	        </li>
+	        
+	        <li class="paginate_button" th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+	            <!-- 현재 페이지는 배경색 노란색으로 표시 -->
+	            <!-- 클릭한 현재페이지 번호를 링크로 연결 -->
+	            <a th:href="@{${num}}" th:text="${num}"></a>
+	        </li>
+	        
+	        <li class="paginate_button" th:if="${pageMaker.next}">
+	            <!-- 끝페이지 + 1 하면 이후의 10개 페이지 표시 -->
+	            <!-- ex>10->11(11~20), 20->21(21~30) -->
+	            <a th:href="@{${pageMaker.endPage + 1}}" th:text="[Next]"></a>
+	        </li>
+	    </ul>
+	</div>
+
+		<form method="get" id="actionForm" action="board_list">
+		    <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}">
+		    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}">
+		</form>
+</body>
+</html>
+<script>
+var actionForm = $("#actionForm");
+//	페이지번호 처리
+$(".paginate_button a").on("click", function(e) {
+// 		기본 동작 막음: 페이지 링크를 통해서 이동
+e.preventDefault();
+// 		console.log("click~!!!");
+console.log("@# href ===>" + $(this).attr("href"));
+actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+actionForm.submit();
+});
+
+//게시글 처리
+$(".move_link").on("click", function(e) {
+  e.preventDefault();
+
+  // 클릭한 링크의 href 속성 값을 가져옴
+  var targetTitle = $(this).text().trim();
+
+  // 새로운 URL을 생성하여 이동
+  var newURL = "board_content_view?board_title=" + encodeURIComponent(targetTitle);
+  window.location.href = newURL;
+});
+</script>

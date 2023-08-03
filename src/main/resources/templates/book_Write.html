@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.btn{
+	width:80px;
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+.tab {
+	border-collapse: collapse;
+	width: 800px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+
+.tab tr:first-child {
+	border-top: none;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+</style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+function fn_submit() {
+       var formData = new FormData($("#frm")[0]);
+        
+        $.ajax({
+          url:"book_writeOk"
+          ,processData: false
+          ,contentType: false
+           ,data:formData
+           ,type:"POST"
+           ,success:function(data){
+              alert("저장 완료");
+              location.href = "book_Write";
+           },
+           error: function() {
+			alert("오류발생");
+// 			alert(data);
+		}
+    
+        });//end of click ajax
+     };   //end of click function
+ 
+	$(document).ready(function() {
+	    $("input[type='file']").on("change", function(e) {
+	        var fileInput = $(this)[0];
+	        var fileList = fileInput.files;
+	        var fileObj = fileList[0];
+
+	        if (!fileCheck(fileObj.name, fileObj.size)) {
+	            return false;
+	        }
+
+	        console.log("fileList: " + fileList);
+	        console.log("fileObj: " + fileObj);
+	        console.log("fileName: " + fileObj.name);
+	        console.log("fileSize: " + fileObj.size);
+	        console.log("fileType(MimeType): " + fileObj.type);
+	});
+	    
+	    
+   var regex = new RegExp("(.*?)\\.(jpg|png)$");
+   var maxSize = 5242880;//5MB
+   
+   function fileCheck(fileName, fileSize) {
+      if (fileSize >= maxSize) {
+         alert("파일 사이즈 초과");
+         return false;
+      }
+      if (!regex.test(fileName)) {
+         alert("해당 종류의 파일은 업로드할 수 없습니다.");
+         return false;
+      }
+         return true;
+   };
+});
+</script>
+<body>
+<div align="center" style="margin-top: 100px;">
+        <h1>도서 등록</h1>
+<form id="frm" method="post" enctype="multipart/form-data">
+    <table class="tab">
+        <tr>
+            <td>도서 카테고리</td>
+            <td>
+                <select name="book_cat">
+                	<option value="1">1 :: 국내도서</option>
+                	<option value="2">2 :: 해외도서</option>
+                	<option value="31">31 :: 초등교과도서</option>
+                	<option value="32">32 :: 중등교과도서</option>
+                	<option value="33">33 :: 고등교과도서</option>
+                	<option value="4">4 :: 추천도서</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>도서명</td>
+            <td>
+                <input type="text" name="book_title">
+            </td>
+        </tr>
+        <tr>
+            <td>작가</td>
+            <td>
+                <input type="text" name="book_author">
+            </td>
+        </tr>
+        <tr>
+            <td>사진</td>
+            <td>
+                <input type="file" name="uploadFile" multiple id="fileItem">
+            </td>
+        </tr>
+        <tr>
+            <td>등록일</td>
+            <td>
+                <input type="text" name="book_date" placeholder="YYMMDD">
+            </td>
+        </tr>
+        <tr>
+            <td>설명</td>
+            <td>
+                <textarea name="book_description" rows="4" cols="50"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" value="등록" onclick="fn_submit()" class="btn">
+                <input type="reset" value="취소" class="btn">
+                <input type="button" value="목록보기" onclick="location.href='book_list'" class="btn">
+            </td>
+        </tr>
+    </table>
+ </form>
+</div>
+</body>
+</html>

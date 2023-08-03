@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.tab {
+	width:1800px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+	}
+	.tab td{
+
+	}
+	.tab tr{
+	border-top: 1px solid silver;
+	padding: 10px;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: #DEB887;
+	}
+	.tab img{
+	width: 400px;
+	height: 250px;
+	}
+.btn{
+	width:100px;
+	height: 40px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">  
+$(document).ready( function() {
+	
+$("#headers").load("nav");  
+
+});
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br><br><br><br><br><br><br>
+<h1 align="center">검색결과 입니다.</h1>
+<div align="right" style="width:1650px;">
+<button onclick="location.href='mainpage'" class="btn">메인화면가기</button>&nbsp;&nbsp;&nbsp;&nbsp;
+도서수:<span th:text="${book_catcount}"></span>
+</div><br>
+<div align="center">
+	<table class="tab">
+			<tr th:each="dto : ${searchmanager}" style="display: inline-block;">
+				<td>
+  				<img th:src="'/image/'+ ${dto.book_image}"><br>
+  				등록일 <span th:text="${#dates.format(dto.book_date, 'yyyy-MM-dd')}"></span><br>
+  				도서명 <a th:href="@{'book_user_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}"></a><br>
+				저자&nbsp; <span th:text="${dto.book_author}"></span><br>
+<!-- 				<span th:text="${dto.book_description}"></span> -->
+			</tr>
+	</table>
+</div>
+</body>
+</html>

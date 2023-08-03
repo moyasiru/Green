@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/new.css">
+<style type="text/css">
+body{
+font-family:"Times New Roman";
+background-color:#F5FFFA;
+}
+.tab{
+	width: 800px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+}
+.tab td{
+	height: 65px;
+}
+	.tab tr{
+	border-top: 2px solid #a9a9a9;
+	padding: 10px;
+	}
+	.tab tr:first-child{
+	border-top: none;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: blue;
+	}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}	
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script type="text/javascript">
+var user_id = "[[${user_id}]]";
+
+function fn_mypage(){
+	location.href="member_mypage?user_id="+user_id;	
+}
+</script>
+</head>
+<body>
+<div align="center" style="margin-top: 100px;">
+	<h1>회원 목록</h1>
+	<table class="tab">
+		<tr>
+			<td>회원번호</td>
+			<td>이름</td>
+			<td>ID</td>
+			<td>Email</td>
+			<td>대여 도서수</td>
+		</tr>
+		<tr th:each="dto : ${member_list}">
+			<td th:text="${dto.user_seq}"></td>
+			<td th:text="${dto.user_name}"></td>
+			<td th:text="${dto.user_id}"></td>
+			<td th:text="${dto.user_email}"></td>
+			<td th:text="${dto.user_rent_count}"></td>
+		</tr>
+		<tr>
+			<td colspan="5" align="right">
+			<button class="btn" onclick="fn_mypage()">관리자 Mypage</button>
+			</td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>

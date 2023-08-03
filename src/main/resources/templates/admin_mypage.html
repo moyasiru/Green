@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+#newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+ #sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+body{
+	font-family:"Times New Roman";
+	background-color:#F5FFFA;
+}
+#frm{
+	margin-top: 150px;
+}
+.tab {
+	border-collapse: collapse;
+	width: 1100px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+.tab tr:first-child {
+	border-top: none;
+}
+
+a {
+	text-decoration: none;
+	color: blue;
+}
+
+.tab tr:last-child:hover {
+	background-color:white;
+}
+.btn{
+	width:100px;
+	height: 50px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready( function() {
+	$("#headers").load("nav");  
+	$("#newsContainer").load("news"); 
+});
+
+function fn_returnlist() {
+	window.location.href = "return_list";
+}
+
+function fn_booklist() {
+    location.href = "book_list";
+}
+
+function fn_boardlist() {
+    location.href = "board_list";
+}
+
+function fn_memberlist() {
+    location.href = "member_list";
+}
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br>
+
+<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+</div>
+
+<div align="center">
+<form id="frm">
+	<table  class="tab">
+		<h1>Admin Page</h1>
+			<tr>
+				<td>관리자번호</td>
+				<td>관리자이름</td>
+				<td>관리자아이디</td>
+				<td>email</td>
+			</tr>
+			<tr th:each="dto : ${list}">
+			<input type="hidden" name="user_id" th:value="${dto.user_id}"/>
+			<input type="hidden" name="user_seq" th:value="${dto.user_seq}"/>
+				<td th:text="${dto.user_seq}"></td>
+				<td th:text="${dto.user_name}"></td>
+				<td th:text="${dto.user_id}"></td>
+				<td th:text="${dto.user_email}"></td>
+			</tr>
+			<tr>
+				<td colspan="4" align="center">
+					<button class="btn" onclick="fn_returnlist()" type="button">반납도서 관리</button>&nbsp;&nbsp;&nbsp;&nbsp;
+					<button class="btn" onclick="fn_booklist()" type="button">도서 관리</button>&nbsp;&nbsp;&nbsp;&nbsp;
+					<button class="btn" onclick="fn_boardlist()" type="button">게시판 관리</button>&nbsp;&nbsp;&nbsp;&nbsp;
+					<button class="btn" onclick="fn_memberlist()" type="button">회원 관리</button>
+				</td>
+			</tr>
+	</table>
+</form>
+</body>
+</html>

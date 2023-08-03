@@ -1,0 +1,120 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/login.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $(".click-signup").click(function() {
+    $(".signup-wrapper").addClass('active');
+    $(".signin-wrapper").removeClass('active');
+    $(".signin-wrapper").addClass('inactive');
+    $(".signup-wrapper").removeClass('inactive');
+  });
+
+  $(".click-signin").click(function() {
+    $(".signin-wrapper").addClass('active');
+    $(".signup-wrapper").removeClass('active');
+    $(".signup-wrapper").addClass('inactive');
+    $(".signin-wrapper").removeClass('inactive');
+  });
+
+  $(".mobile").click(function() {
+    $(".root").addClass('mobile-root');
+  });
+
+  $(".desk").click(function() {
+    $(".root").removeClass('mobile-root');
+  });
+});
+
+
+function fn_submit(){
+	
+		var user_id = $('#login_id').val();
+		var user_pwd = $('#login_pw').val();
+		console.log(user_id);
+		$.ajax({
+			 url:"member_login_yn",
+			 data:{user_id:user_id,
+				 user_pwd:user_pwd},
+			 success:function(data){
+				 if(data==1){
+					 alert("로그인되었습니다");
+					 location.href="member_loginOk?user_id="+$("#login_id").val();
+				 } else{
+					 alert("로그인에 실패했습니다");
+				 }
+			 },
+			 error:function(request, error){
+				 alert(""+request.status+"\n"+error);
+			 }
+		 });
+};
+
+function fn_submitregi(){
+	
+	var formData = $("#frm2").serialize();
+	
+	$.ajax({
+		type:"post"
+	   ,data:formData
+// 	   ,url:"member_registerOk"
+	   ,success: function(data) {
+			alert("회원가입완료");
+
+		}
+	   ,erro: function() {
+			alert("오류발생");
+		}
+	});
+};
+
+</script>
+</head>
+<body>
+<div class="root">
+  <div class="signin-wrapper form active">
+    <div class="form-wrapper">
+	<form method="post" id="frm">
+      <h5>환영합니다 👊</h5>
+      <input type="text" placeholder="Username" class="form-field" name="user_id" id="login_id"></input>
+      <input  type="password" placeholder="Password" class="form-field" name="user_pwd" id="login_pw"></input>
+      <button class="button primary" onclick="fn_submit()">Sign In</button>
+      <button class="button secondary click-signup" onclick="event.preventDefault();">Sign Up</button>
+      </form>
+    <p>
+      view concept for 
+      <a class="mobile"><b>mobile</b></a> 
+      or for 
+      <a class="desk"><b>desktop</b></a>
+    </p>
+  
+
+    </div>
+
+  </div>
+  <div class="signup-wrapper form inactive">
+<div class="form-wrapper">
+	<form method="post" id="frm2" action="member_registerOk">
+      <h5>👋 Hello</h5>
+      <input type="text" placeholder="UserId" class="form-field" name="user_id"></input>
+      <input  type="password" placeholder="Password" class="form-field" name="user_pwd"></input>  
+      <input type="text" placeholder="Username" class="form-field" name="user_name"></input>
+      <input type="email" placeholder="Email" class="form-field" name="user_email"></input>
+      <button class="button primary" onclick="fn_submitregi()">Sign Up</button>
+      <button class="button secondary click-signin" onclick="event.preventDefault();">Sign In</button>
+	</form>
+    <p>
+      view concept for 
+      <a class="mobile"><b>mobile</b></a> 
+      or for 
+      <a class="desk"><b>desktop</b></a>
+    </p>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

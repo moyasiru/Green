@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://cdn.ckeditor.com/ckeditor5/12.4.0/classic/ckeditor.js"></script>
+<style>
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.ck.ck-editor {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.ck-editor__editable {
+	height: 60vh;
+}
+
+form {
+	text-align: center;
+	margin: 0 auto;
+}
+.tab {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* Style the table */
+.tab table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tab th, .tab td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab th {
+    background-color: #f2f2f2;
+}
+
+
+.tab input[type="text"] {
+    width: 90%;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.tab textarea {
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+    height: 150px;
+}
+
+.tab .text-right {
+    text-align: right;
+}
+
+.tab .btn {
+    margin-top: 10px;
+}
+.tab tr{
+	margin-bottom: 20px;
+}
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready( function() {
+
+	$("#headers").load("nav");  
+		
+	 var user_id = "[[${user_id}]]";
+	 
+	 console.log("현재 세션 ----->"+user_id);
+	  
+      $.ajax({
+        url:"board_userseq"
+         ,data:{user_id:user_id}
+         ,success:function(data){
+            alert("seq 불러오기완료");
+            console.log("seq =="+data.user_seq);
+            
+            $("input[name='user_seq']").val(data.user_seq);
+         },
+         error: function() {
+			alert("오류발생");
+		}
+  
+      });//end of click ajax
+}); 
+
+
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br><br><br><br><br>
+
+
+	<form action="board_write">
+	<h2>게시글 작성</h2>
+<div align="center">
+	<table class="tab">
+	 <input type="hidden" name="user_seq"/>
+	 <input type="hidden" name="user_id" th:value="${user_id}"/>
+			<tr>
+				<td>작성자</td>
+				<td th:text="${user_id}"></td>
+			</tr>
+		<tr>
+			<td>
+				게시글 이름
+			</td>
+			<td>
+				<input type="text" name="board_title">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<textarea id="editor" name="board_content"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+		<input type="button" class="btn" value="목록보기" onclick="history.go(-1)" />
+		<input type="submit" class="btn" value="작성완료" />			
+			</td>
+		</tr>
+	</table>
+</div>
+	</form>
+
+
+	<!-- CKEditor -->
+	<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+	<script>		
+	ClassicEditor
+	.create(document.querySelector('#editor'), {
+		ckfinder: {
+			uploadUrl : '/image/upload'
+		}
+	})
+	.then(editor => {
+		console.log('Editor was initialized');
+	})
+	.catch(error => {
+		console.error(error);
+	});
+	</script>
+</body>
+</html>

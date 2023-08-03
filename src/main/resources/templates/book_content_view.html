@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.btn{
+	width:80px;
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+.tab img{
+	width: 500px;
+	height: 300px;
+}
+.tab {
+	border-collapse: collapse;
+	width: 800px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+
+.tab tr:first-child {
+	border-top: none;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+function modify_submit() {
+    var formData = new FormData($("#frm")[0]);
+     
+     $.ajax({
+       url:"book_modify"
+       ,processData: false
+       ,contentType: false
+        ,data:formData
+        ,type:"POST"
+        ,success:function(data){
+           alert("수정 완료");
+//            location.href = "redirect:book_list";
+           window.location.href = "/book_list";
+        },
+        error: function() {
+			alert("오류발생");
+
+		}
+ 
+     });
+  }; 
+function delete_submit() {
+    var formData = new FormData($("#frm")[0]);
+     
+     $.ajax({
+       url:"book_delete"
+       ,processData: false
+       ,contentType: false
+        ,data:formData
+        ,type:"POST"
+        ,success:function(data){
+           alert("삭제 완료");
+//            location.href = "redirect:book_list";
+           window.location.href = "/book_list";
+        },
+        error: function() {
+			alert("오류발생");
+
+		}
+ 
+     });
+  }; 
+</script>
+</head>
+<body>
+<div align="center" style="margin-top: 50px;">
+  <form id="frm">
+	<input type="hidden" name="book_seq" th:value="${book_content_view.book_seq}"/>
+	<input type="hidden" name="book_image" th:value="${book_content_view.book_image}"/>
+	<input type="hidden" name="pageNum" value="${pageMaker.pageNum}">
+	<input type="hidden" name="amount" value="${pageMaker.amount}">
+	<table class="tab">
+		<tr>
+			<td>도서일련번호</td>
+			<td th:text="${book_content_view.book_seq}"></td>
+		</tr>
+		<tr>
+			<td>도서명</td>
+			<td>
+				<input type="text" name="book_title" th:value="${book_content_view.book_title}"/>
+			</td>			
+		</tr>
+		<tr>
+			<td>작가</td>
+			<td>
+				<input type="text" name="book_author" th:value="${book_content_view.book_author}"/>
+			</td>			
+		</tr>
+		<tr>
+			<td>사진</td>
+			<td>
+    			<img th:src="'/image/'+ ${book_content_view.book_image}">
+   			</td>			
+		</tr>
+		<tr>
+			<td>설명</td>
+			<td>
+				<textarea style="width: 300px;height: 50px;" name="book_description" th:text="${book_content_view.book_description}"></textarea>
+			</td>	
+		</tr>
+		<tr>
+			<td>등록일</td>
+			<td>
+				<input type="text" name="book_date" th:value="${#dates.format(book_content_view.book_date, 'yyMMdd')}"/>
+			</td>			
+		</tr>
+		<tr>
+			<td>대여가능여부</td>
+			<td>
+				<input type="text" name="book_rent" th:value="${book_content_view.book_rent}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>대출상태</td>
+			<td th:text="${book_content_view.book_state}"></td>			
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="button" value="수정" onclick="modify_submit()" class="btn">
+				<input type="button" value="삭제" onclick="delete_submit()" class="btn">
+				<input type="button" value="목록보기" onclick="location.href='book_list'" class="btn">
+			</td>
+		</tr>
+	</table>
+  </form>
+ </div>
+</body>
+</html>

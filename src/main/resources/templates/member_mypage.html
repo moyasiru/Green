@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+#newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+ #sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+body{
+	font-family:"Times New Roman";
+	background-color:#F5FFFA;
+}
+#frm{
+	margin-top: 150px;
+}
+.tab {
+	border-collapse: collapse;
+	width: 1100px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+.tab tr:first-child {
+	border-top: none;
+}
+
+a {
+	text-decoration: none;
+	color: blue;
+}
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready( function() {
+	$("#headers").load("nav");  
+	$("#newsContainer").load("news"); 
+});
+
+function modify_submit() {
+    var formData = new FormData($("#frm")[0]);
+     $.ajax({
+       url:"member_modify"
+       ,processData: false
+       ,contentType: false
+        ,data:formData
+        ,type:"POST"
+        ,success:function(data){
+           alert("수정되었습니다.");
+        },
+        error: function() {
+			alert("오류발생");
+		}
+ 
+     });//end of click ajax
+}
+
+function delete_submit() {
+    var formData = new FormData($("#frm")[0]);
+    
+    var userRentCount = $("#rent_count").text(); // 현재 user_rent_count 값 가져오기
+
+    if (userRentCount != 0) {
+        // user_rent_count가 0이 아닌 경우에는 경고창 띄우고 탈퇴 작업 중단
+        alert("반납할 책이 남아있습니다. 모든 책을 반납 후 탈퇴 가능합니다.");
+        return;
+    }
+    
+    if(confirm("정말 탈퇴하시겠습니까?")){
+			$.ajax({
+		    url:"member_delete",
+			type:"post",
+			data:{user_id : $("input[name='user_id']").val()},
+			success:function(){
+	   		   alert("회원정보가 삭제되었습니다");
+	   		   location.href="mainpage";
+			},
+			error:function(request, error){
+			   alert(""+request.status+"\n"+error);
+			}
+		}); // ajax 끝
+		}else{
+			alert("탈퇴가 취소되었습니다");			
+		}
+}
+
+var listVisible = false;
+
+function fn_list() {
+    // 만약 list가 보이는 상태라면 숨기기
+    if (listVisible) {
+        $("#return_user_list").empty(); // 기존에 보여준 데이터를 지웁니다.
+        listVisible = false;
+    } else {
+        // 만약 list가 숨겨진 상태라면 데이터 가져오기
+        var formData = $("#frm").serialize();
+        $.ajax({
+            url: "return_user_list",
+            type: "post",
+            data: formData,
+            success: function (data) {
+                $("#return_user_list").html(data); // 데이터를 출력합니다.
+                listVisible = true;
+            },
+            error: function (request, error) {
+                alert("" + request.status + "\n" + error);
+            }
+        });
+    }
+}
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br>
+
+<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+</div>
+
+<div align="center">
+<form id="frm">
+	<table border="1" class="tab">
+		<h1>MyPage</h1>
+			<tr>
+			
+				<td>회원번호</td>
+				<td>회원이름</td>
+				<td>회원아이디</td>
+				<td>회원비밀번호</td>
+				<td>email</td>
+				<td>대여도서권수</td>
+			</tr>
+			<tr th:each="dto : ${list}">
+			<input type="hidden" name="user_id" th:value="${dto.user_id}"/>
+			<input type="hidden" name="user_seq" th:value="${dto.user_seq}"/>
+				<td th:text="${dto.user_seq}"></td>
+				<td>
+					<input type="text" name="user_name" th:value="${dto.user_name}"/>
+				</td>
+				<td th:text="${dto.user_id}">
+				</td>
+				<td>
+					<input type="text" name="user_pwd" th:value="${dto.user_pwd}"/>
+				</td>
+				<td>
+					<input type="text" name="user_email" th:value="${dto.user_email}"/>
+				</td>
+				<td>
+				<a href="#" th:text="${dto.user_rent_count}" id="rent_count" onclick="fn_list()"></a>				
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6" align="right">
+					<input type="button" onclick="modify_submit()" value="정보수정하기" class="btn">
+					<input type="button" onclick="delete_submit()" value="회원탈퇴하기" class="btn">
+				</td>
+			</tr>
+	</table>
+</form>
+</div><br>
+	<div align="center" style="margin-top: 50px;">
+		<div id="return_user_list"></div>
+	</div>
+</body>
+</html>

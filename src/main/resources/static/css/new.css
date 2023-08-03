@@ -1,0 +1,34 @@
+
+    #contents {
+    	width:200px;
+         order: 2;
+         background-color: white; border: 2px solid #5d5d5d;
+    }
+    
+       .news-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .news-item {
+        width: 200px;
+        margin-bottom: 20px;
+/*         border: 1px solid #5d5d5d; */
+        padding: 10px;
+    }
+
+    .news-item img {
+        width: 100%;
+        height:60%;
+        border: 0;
+    }
+
+    .news-item .title {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .news-item .content {
+        margin-top: 10px;
+    }

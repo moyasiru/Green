@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.boot.member.mapper.BoardDao">
+
+	<insert id="board_write" parameterType="hashmap">
+	  	insert into book_board(user_seq,user_id,board_title,board_content)
+	  			values(#{user_seq},#{user_id},#{board_title},#{board_content})
+    </insert>
+    
+     <select id="board_write_check" resultType="int" parameterType="hashmap">
+    	select count(*) from book_board where user_seq = #{user_seq}
+    </select>
+    
+    <select id="board_contentView" parameterType="hashmap" resultType="com.boot.member.dto.BoardDto">
+    	select * from book_board where board_title=#{board_title}
+    </select>
+    
+     <select id="board_getTotalCount" resultType="int">
+    	select count(*) from book_board
+    </select>
+    
+     <select id="board_list" resultType="com.boot.member.dto.BoardDto">
+		<![CDATA[
+ 					SELECT user_seq,user_id,board_title,board_content 
+				FROM ( 
+				    SELECT rownum rn, user_seq, user_id, board_title, board_content 
+				    FROM ( 
+				        SELECT user_seq, user_id, board_title, board_content 
+				        FROM book_board 
+ 				        ORDER BY user_seq DESC 
+ 				    ) 
+				    WHERE rownum <= (#{pageNum} * #{amount}) 
+				) 
+				WHERE rn > (#{pageNum} - 1) * #{amount} 
+ 				ORDER BY user_seq desc 
+			]]> 
+		
+    </select>
+    
+     <select id="board_userseq" resultType="com.boot.member.dto.MemDto">
+		select user_seq,nvl(user_rent_count,0) "user_rent_count" from book_user where user_id=#{user_id}
+    </select>
+    
+    <delete id="board_delete" parameterType="hashmap">
+    	delete from book_board where user_id=#{user_id}
+    </delete>
+    
+</mapper>

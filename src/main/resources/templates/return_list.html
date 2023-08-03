@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+	font-family:"Times New Roman";
+	background-color:#F5FFFA;
+}
+#frm{
+	margin-top: 100px;
+}
+.tab {
+	border-collapse: collapse;
+	width: 1100px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+.tab tr:first-child {
+	border-top: none;
+}
+
+a {
+	text-decoration: none;
+	color: #blue;
+}
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+function fn_submit(rent_seq, book_seq, user_seq) {
+	 $.ajax({
+       url:"rent_yn"
+        ,data:{rent_seq:rent_seq}
+        ,success:function(data){
+        	alert("반납처리 완료");
+	        	 $.ajax({
+	                 url:"book_rent_update"
+	                 ,data: {book_seq: book_seq}
+	                 ,type: "POST"
+	                 ,success: function(data){
+	                	 alert("book_rent_update 메서드 실행 성공");
+	                     console.log("book_rent_update 메서드 실행 성공");
+	                     
+		                     $.ajax({
+		                         url:"member_rent_count_back"
+		                         ,data: {user_seq: user_seq}
+		                         ,type: "POST"
+		                         ,success: function(data){
+		                        	 alert("member_rent_count_back 메서드 실행 성공");
+		                             console.log("member_rent_count_back 메서드 실행 성공");
+		                                  
+		                         },
+		                         error: function() {
+		                        	 alert("member_rent_count_back 메서드 실행 실패");
+		                             console.log("member_rent_count_back 메서드 실행 실패");
+		                         }
+		                     });
+	                     
+	                     
+	                 },
+	                 error: function() {
+	                	 alert("book_rent_update 메서드 실행 실패");
+	                     console.log("book_rent_update 메서드 실행 실패");
+	                 }
+	             });
+        		
+           location.href="return_list";
+        },
+        error: function() {
+			alert("오류발생");
+		}
+ 
+     });//end of click ajax
+}
+
+
+function fn_clear() {
+     $.ajax({
+       url:"rent_delete"
+        ,success:function(data){
+        	alert("정리 완료");	        	        	
+           location.href="return_list";
+        },
+        error: function() {
+			alert("오류발생");
+		}
+ 
+     });//end of click ajax
+}   
+
+var user_id = "[[${user_id}]]";
+
+function fn_mypage(){
+	location.href="member_mypage?user_id="+user_id;	
+}
+</script>
+</head>
+<body>
+<div align="center">
+ <form id="frm">
+	<h1>반납 확인</h1>
+		<table class="tab">
+			<tr>
+				<td>대여번호</td>
+				<td>도서번호</td>
+				<td>회원번호</td>
+				<td>도서대출일</td>
+				<td>도서반납일</td>
+				<td>도서반납여부</td>
+				<td>반납확인</td>
+			</tr>
+			<tr th:each="dto : ${list}">
+					<input type="hidden" name="book_seq" th:value="${dto.book_seq}"/>		
+				<td th:text="${dto.rent_seq}">
+	<!--   				<a th:href="@{'rent_content_view?rent_seq=' + ${dto.rent_seq}}" th:text="${dto.rent_seq}"></a> -->
+				</td>
+				<td th:text="${dto.book_seq}">
+				</td>
+				<td th:text="${dto.user_seq}"></td>
+				<td th:text="${#dates.format(dto.rent_date, 'yyyy-MM-dd')}"></td>
+				<td th:text="${#dates.format(dto.rent_return_date, 'yyyy-MM-dd')}"></td>
+				<td th:text="${dto.rent_date_yn}"></td>
+				<td>
+						 <input type="button"  class="btn" value="반납확인" th:value="${dto.rent_date_yn == 'N' ? '반납확인' : '반납완료'}" 
+						 th:onclick="'fn_submit(\'' + ${dto.rent_seq} + '\', \'' + ${dto.book_seq} + '\', \'' + ${dto.user_seq} + '\')'"
+						  th:disabled="${dto.rent_date_yn == 'Y'}">
+	<!-- 				<input type="button" id="state" value="반납확인" th:value="${dto.rent_date_yn == 'N' ? '반납확인' : '반납완료'}" th:onclick="'fn_submit(\'' + ${dto.rent_seq} + '\')'"> -->
+				</td>
+			</tr>
+			<tr>
+				<td colspan="7" align="left">
+					<input type="button" value="반납완료 정리" onclick="fn_clear()" class="btn">				
+					<input type="button" value="관리자 MyPage" onclick="fn_mypage()" class="btn">				
+				</td>
+			</tr>
+	</table>
+ </form>
+</div>
+</body>
+</html>

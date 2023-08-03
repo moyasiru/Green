@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table border="1" class="tab">
+		<tr>
+			<td>대여번호</td>
+			<td>도서번호</td>
+			<td>회원번호</td>
+			<td>도서대출일</td>
+			<td>도서반납일</td>
+			<td>도서반납여부</td>
+		</tr>
+		<tr th:each="dto : ${return_user_list}">
+				<input type="hidden" name="book_seq" th:value="${dto.book_seq}"/>		
+			<td th:text="${dto.rent_seq}">
+<!--   				<a th:href="@{'rent_content_view?rent_seq=' + ${dto.rent_seq}}" th:text="${dto.rent_seq}"></a> -->
+			</td>
+			<td th:text="${dto.book_seq}">
+			</td>
+			<td th:text="${dto.user_seq}"></td>
+			<td th:text="${#dates.format(dto.rent_date, 'yyyy-MM-dd')}"></td>
+			<td th:text="${#dates.format(dto.rent_return_date, 'yyyy-MM-dd')}"></td>
+			<td th:text="${dto.rent_date_yn}"></td>
+		</tr>
+	</table>
+</body>
+</html>

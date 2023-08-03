@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+.div_page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.div_page ul {
+	display: flex;
+	list-style: none;
+}
+li{
+	padding: 10px;
+}
+.tab img{
+	width: 300px;
+	height: 150px;
+}
+.tab {
+	border-collapse: collapse;
+	width: 1100px;
+	/* 	height: 1000px; */
+	border-top: none;
+	border-right: none;
+	/* 	border-bottom: none; */
+	border-left: none;
+	font-size: 1.2em;
+}
+
+.tab td {
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	border-left: none;
+	height: 80px;
+}
+
+.tab tr {
+	border-top: 2px solid #a9a9a9;
+}
+
+.tab tr:first-child {
+	border-top: none;
+}
+.tab tr:hover {
+    background-color: #f2f2f2;
+}
+a {
+	text-decoration: none;
+	color: #blue;
+}
+.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script type="text/javascript">
+var user_id = "[[${user_id}]]";
+
+function fn_mypage(){
+	location.href="member_mypage?user_id="+user_id;	
+}
+</script>
+</head>
+<body>
+<div align="center">
+	<table border="1" class="tab">
+		<tr>
+			<td style="width: 5%;">도서일련번호</td>
+			<td style="width: 10%;">도서명</td>
+			<td style="width: 10%;">작가</td>
+			<td style="width: 35%;">사진</td>
+			<td style="width: 5%;">등록일</td>
+			<td style="width: 30%;">설명</td>
+		</tr>
+			<tr th:each="dto : ${list}">
+				<td>
+				<a th:href="@{'book_content_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_seq}" class="move_link"></a>
+				</td>
+				<td th:text="${dto.book_title}">
+				</td>
+				<td th:text="${dto.book_author}">
+				</td>
+		   		<td>
+    				<img th:src="'/image/'+ ${dto.book_image}">
+   				</td>
+				<td th:text="${#dates.format(dto.book_date, 'yyyy-MM-dd')}"></td>
+				<td th:text="${dto.book_description}"></td>
+			</tr>
+		<tr>
+		<td colspan="6" style="text-align: right;">
+			<form action="book_search">
+					<input type="text" name="keyword" placeholder="도서명">
+					 <input type="submit" value="검색" class="btn" style="width: 60px;">
+			</form>
+				<button onclick="location.href='book_Write'" class="btn">상품등록하기</button>
+				<button onclick="fn_mypage()" class="btn">관리자 MyPage</button>
+			</td>
+		</tr>
+	</table>
+<div class="div_page">
+	    <ul>
+	        <li class="paginate_button" th:if="${pageMaker.prev}">
+	            <a th:href="@{${pageMaker.startPage - 1}}" th:text="[Previous]"></a>
+	        </li>
+	        
+	        <li class="paginate_button" th:each="num : ${#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+	            <a th:href="@{${num}}" th:text="${num}"></a>
+	        </li>
+	        
+	        <li class="paginate_button" th:if="${pageMaker.next}">
+	            <a th:href="@{${pageMaker.endPage + 1}}" th:text="[Next]"></a>
+	        </li>
+	    </ul>
+	</div>
+</div>
+		<form method="get" id="actionForm" action="book_list">
+		    <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}">
+		    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}">
+		</form>
+</body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+var actionForm = $("#actionForm");
+//	페이지번호 처리
+$(".paginate_button a").on("click", function(e) {
+// 		기본 동작 막음: 페이지 링크를 통해서 이동
+e.preventDefault();
+// 		console.log("click~!!!");
+console.log("@# href ===>" + $(this).attr("href"));
+actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+actionForm.submit();
+});
+
+//게시글 처리
+$(".move_link").on("click", function(e) {
+  e.preventDefault();
+
+  // 클릭한 링크의 href 속성 값을 가져옴
+  var targetTitle = $(this).text().trim();
+
+  // 새로운 URL을 생성하여 이동
+  var newURL = "book_content_view?book_seq=" + encodeURIComponent(targetTitle);
+  window.location.href = newURL;
+});
+</script>

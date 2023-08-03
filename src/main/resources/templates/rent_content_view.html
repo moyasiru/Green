@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table border="1">
+		<tr>
+			<td>대여번호</td>
+			<td th:text="${rent_content_view.rent_seq}"></td>
+		</tr>
+		<tr>
+			<td>도서번호</td>
+			<td th:text="${rent_content_view.book_seq}"></td>
+		</tr>
+		<tr>
+			<td>회원번호</td>
+			<td th:text="${rent_content_view.user_seq}"></td>
+		</tr>
+		<tr>
+			<td>도서대출일</td>
+			<td th:text="${#dates.format(rent_content_view.rent_date, 'yyyy-MM-dd')}"></td>
+		</tr>
+		<tr>
+			<td>도서반납일</td>
+			<td th:text="${#dates.format(rent_content_view.rent_return_date, 'yyyy-MM-dd')}"></td>
+		</tr>
+		<tr>
+			<td>도서반납여부</td>
+			<td>
+				<input type="text" name="rent_date_yn" th:value="${rent_content_view.rent_date_yn}"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="button" value="반납처리" onclick="modify_submit()">
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/new.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+<style type="text/css">
+body{
+ font-family: "Times New Roman";
+ background-color:#F5FFFA;
+}
+img {
+        width: 500px;
+        height: 700px;
+      }
+.slider-container{
+	width: 420px;
+}
+.slider {
+        width: 420px;
+        right: 80px;
+      }
+.slick-prev:before, .slick-next:before {
+        color: #444444;
+      }
+#newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+    
+#sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+#chatContainer {
+  width: 10%;
+  display: inline-block;
+  position: relative; /* 채팅방의 위치를 상대적으로 설정 */
+}
+
+#showChatButton {
+  width: 300px;
+  height: 50px;
+}
+
+#chatRoom {
+  display: none; /* 채팅방은 처음에 보이지 않도록 설정 */
+  position: absolute; /* 채팅방의 위치를 절대적으로 설정 */
+  top: -770px; /* 버튼 위로 채팅방을 이동시키기 위한 값 설정 */
+  right: 60px;
+/*   background-color: #f1f1f1; */
+  padding: 10px;
+  width: 100%;
+}
+#chart-container {
+  display:inline-block;
+  width: 70%;
+  height: 100%; /* 적절한 높이로 조절 (예: 600px) */
+  margin-top: 20px; /* headers와의 간격 조정 (예: 20px) */
+  margin-left: 20px; /* headers와의 간격 조정 (예: 20px) */
+}
+
+#chartdiv {
+   width: 1100px; 
+  height: 900px;
+}
+
+.tab {
+	width:1800px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+	}
+	.tab tr{
+	border-top: 1px solid silver;
+	padding: 10px;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: #DEB887;
+	}
+	.tab img{
+	width: 350px;
+	height: 250px;
+	}
+	.tab tr:hover {
+    background-color: #f2f2f2;
+}
+	.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script type="text/javascript">  
+$(document).ready( function() {
+
+	  $( '.slider-container' ).slick( {
+		  autoplay: true,
+          autoplaySpeed: 1000,
+	    } );
+	
+$("#headers").load("nav");  
+
+$("#newsContainer").load("news");
+
+$("#footer2").load("footer2"); 
+
+
+ var user_id = "[[${user_id}]]";
+ console.log("현재 세션 ----->"+user_id);
+
+
+ $("#showChatButton").on("click", function() {
+	    // showbook과 chatRoom 요소를 찾습니다.
+	    var showbookElement = $("#showbook");
+	    var chatRoomElement = $("#chatRoom");
+
+	    // 채팅방이 이미 로드된 경우 다시 로드하지 않습니다.
+	    if (chatRoomElement.children().length === 0) {
+	        if (user_id) {
+	            // 채팅방 로드
+	            chatRoomElement.load("chat/" + user_id, function() {
+	                // 로드 완료 후 열기/닫기 토글
+	                chatRoomElement.toggle();
+	                showbookElement.toggle();
+	            });
+	        } else {
+	        	chatRoomElement.load("chat/guest" , function() {
+	                // 로드 완료 후 열기/닫기 토글
+	                chatRoomElement.toggle();
+	                showbookElement.toggle();
+	            });
+	        }
+	    } else {
+	        // 채팅방이 이미 열려있을 때는 닫습니다.
+	        chatRoomElement.toggle();
+	        showbookElement.toggle();
+	    }
+	});
+
+
+$.ajax({
+    url: "bookcat_list",
+    method: "GET",
+    dataType: "json",
+    success: function(data) {
+      processDataAndDrawChart(data);
+    },
+    error: function(xhr, status, error) {
+      console.error("Error fetching data:", error);
+    }
+  });
+});
+
+
+//데이터를 처리하고 차트를 그리는 함수
+function processDataAndDrawChart(data) {
+  var book_cat1 = 0;
+  var book_cat2 = 0;
+  var book_cat31 = 0;
+  var book_cat32 = 0;
+  var book_cat33 = 0;
+
+  // 데이터 처리
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    switch (item.book_cat) {
+      case 1:
+        book_cat1 += item.count;
+        break;
+      case 2:
+        book_cat2 += item.count;
+        break;
+      case 31:
+        book_cat31 += item.count;
+        break;
+      case 32:
+        book_cat32 += item.count;
+        break;
+      case 33:
+        book_cat33 += item.count;
+        break;
+      default:
+        // 다른 book_cat 값들 처리 (예외 처리)
+        break;
+    }
+  }
+
+  // 차트 데이터 준비
+  var chartData = [
+    { book_cat: "국내도서", count: book_cat1 },
+    { book_cat: "해외도서", count: book_cat2 },
+    { book_cat: "초등교과도서", count: book_cat31 },
+    { book_cat: "중등교과도서", count: book_cat32 },
+    { book_cat: "고등교과도서", count: book_cat33 }
+  ];
+
+  drawChart(chartData);
+}
+
+// 차트를 그리는 함수
+function drawChart(data) {
+  am4core.ready(function() {
+    am4core.useTheme(am4themes_animated);
+
+    var chart = am4core.create("chartdiv", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.data = data;
+    chart.innerRadius = am4core.percent(30);
+    chart.depth = 70;
+
+    chart.legend = new am4charts.Legend();
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "count";
+    series.dataFields.category = "book_cat";
+    series.slices.template.cornerRadius = 5;
+    series.colors.step = 3;
+  });
+}
+
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br>
+
+<div style="width: 1700px;">
+	<div id="chart-container">
+  		<div id="chartdiv">
+  		</div>
+ 	</div>
+
+	<div id="chatContainer">
+ 		<div align="center" id="showbook">
+ 			<h2 style="width: 430px;">추천 도서</h2>
+ 			<div class="slider-container">
+			  <div class="slider" th:each="dto : ${bookcat4_list}">
+			    <div><img th:src="'/image/'+ ${dto.book_image}"></div>
+			  </div>
+			</div>
+ 		</div>
+ 		<br><br>
+    	<button id="showChatButton" class="btn">운영자와 상담하기</button>
+    	<div id="chatRoom" style="height: 650px;"></div>
+  	</div>
+  	<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+  	</div>
+  	
+</div>
+
+<div align="center">
+<table class="tab">
+<h1 align="center" style="margin-right: 200px;">도서 목록</h1>
+			<tr th:each="dto : ${list}" style="display: inline-block;">
+		   		<td style="width:15%;">
+    				<img th:src="'/image/'+ ${dto.book_image}"><br>
+    				등록일 <span th:text="${#dates.format(dto.book_date, 'yyyy-MM-dd')}"></span><br>
+  					도서명 <a th:href="@{'book_user_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}"></a><br>
+<!--   					<a th:href="@{'book_content_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}"></a> -->
+					저자&nbsp;<span th:text="${dto.book_author}"></span><br>
+<!-- 					<span th:text="${dto.book_description}"></span> -->
+				</td>
+			</tr>
+	</table>
+</div>
+<div id="footer2"></div>
+</body>
+</html>

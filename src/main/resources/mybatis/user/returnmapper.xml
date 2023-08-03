@@ -1,0 +1,36 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.boot.member.mapper.ReturnDao">
+
+	<insert id="return_write" parameterType="hashmap">
+	  	insert into book_return(rent_seq,book_seq,user_seq,rent_date,rent_return_date,rent_date_yn)
+	  			values(rent_seq.NEXTVAL,#{book_seq},#{user_seq},sysdate,sysdate + INTERVAL '5' DAY,'N')
+    </insert>
+    
+     <select id="return_list" resultType="com.boot.member.dto.ReturnDto">
+		SELECT * FROM book_return
+    </select>
+    
+    <select id="return_getTotalCount" resultType="int">
+    	select count(*) from book_return
+    </select>
+    
+     <select id="rent_content_view" parameterType="hashmap" resultType="com.boot.member.dto.ReturnDto">
+    	select * from book_return where rent_seq=#{rent_seq}
+    </select>
+    
+    <update id="rent_yn" parameterType="String">
+    	 update book_return set rent_date_yn = 'Y' where rent_seq = #{rent_seq}
+    </update>
+    
+    <delete id="rent_delete">
+    	delete from book_return where rent_date_yn='Y'
+    </delete>
+    
+    <update id="book_rent_update" parameterType="String">
+    	 update book_book set book_rent = 'Y',book_state = '대출가능' where book_seq = #{book_seq}
+    </update>
+    
+</mapper>

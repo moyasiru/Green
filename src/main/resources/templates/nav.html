@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style type="text/css">
+.wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+    background-color: aliceblue;
+  z-index: 99;
+  opacity: 0.7;
+  font-family:"Times New Roman";
+}
+.log_in{
+ 	  float: right; 
+      margin-right: 100px;
+    	  display: inline-block; 
+}
+.login_table{
+ 	width: 200px; 
+ 	height: 100px; 
+ 	font-size: 1.1em;
+}
+.login_table a{
+	text-decoration: none;
+	color: black;
+}
+.login_table a:hover{
+	text-decoration: none;
+	 color: #1e6b7b;
+}
+.logo{
+    padding: 3px;
+    text-align: center;
+}
+.logo a{
+    text-decoration: none;
+    color: black;
+}
+.logo a:hover{
+    color: #1e6b7b;
+}
+.nav_table{
+     width: 100px; 
+    box-sizing: border-box;
+/*    background-color: #f2f2f2; */
+}
+.nav_table th{
+    width: 100px;
+    font-size: 18px;
+}
+.nav_table td{
+    width: 80px;
+    height: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 12px;
+    text-align: center;
+}
+.nav_table a{
+    text-decoration: none;
+    color: black;
+}
+.nav_div{
+    display: flex;
+    align-items: flex-start;
+    margin-top: 100px; padding: 0;
+    height: 50px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 99;
+}
+.menu_list{
+   display: flex; /* 요소들을 가로로 나열합니다. */
+   float: right;
+   margin-left: 150px;
+}
+.logo {
+  display: flex;
+  align-items: center; /* 요소들을 수직 가운데로 정렬합니다. */
+  margin-left: 100px;
+}
+.logo h1 {
+  margin-right: 20px; /* h1 태그 오른쪽에 여백을 주기 위해 설정합니다. */
+  font-size: 2em;
+}
+.menu1, .menu2, .menu3, .menu4, .menu5{
+    display: inline-block;
+     width: 250px; 
+    padding: 20px;
+}
+.log_in{
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 5px;
+    text-align: center;
+}
+
+
+.w-btn {
+	width:120px;
+    position: relative;
+    border: none;
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 15px;
+    font-family: "paybooc-Light", sans-serif;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.25s;
+}
+.w-btn-indigo {
+    background-color: aliceblue;
+	color: #1e6b7b;
+}
+
+.w-btn-green {
+    background-color: #77af9c;
+	 color: #d7fff1;
+}
+
+.w-btn-green2 {
+    background-color: #519d9e;
+	 color: #d7fff1;
+}
+
+.w-btn-brown {
+    background-color: #ce6d39;
+	 color: #d7fff1;
+}
+
+.w-btn-blue {
+    background-color: #6aafe6;
+	 color: #d7fff1;
+}
+
+.w-btn:hover {
+    letter-spacing: 2px;
+    transform: scale(1.2);
+    cursor: pointer;
+    width:130px;
+}
+.type{
+	width: 100px;
+	height: 30px;
+	border-radius: 10px;
+}
+.keyword{
+	width: 300px;
+	height: 24px;
+	border-radius: 10px;
+	background-color: white;
+}
+
+.searchbtn{
+	width:70px;
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.searchbtn:hover{
+	background-color: aliceblue;
+}
+
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+
+function fn_confirm() {
+	alert("로그인이 필요한 서비스입니다.");
+}
+
+
+$("#searchForm button").on("click", function(e) {
+    e.preventDefault();
+
+    var searchForm = $("#searchForm");
+    if (!searchForm.find("select[name='type']").val()) {
+        alert("검색종류를 선택하세요");
+        return;
+    }
+    if (!searchForm.find("input[name='keyword']").val()) {
+        alert("키워드를 입력하세요");
+        return;
+    }
+    searchForm.attr("action","search_list").submit();
+});
+
+var user_id = "[[${user_id}]]";
+
+
+function fn_mypage(){
+	location.href="member_mypage?user_id="+user_id;	
+}
+
+
+function fn_cat4(){
+	location.href="book_catlist?book_cat="+4;	
+}
+function fn_cat3(){
+	location.href="book_catlist?book_cat="+3;	
+}
+function fn_cat(){
+	location.href="book_catlist?book_cat="+1;	
+}
+
+
+</script>
+</head>
+<body>
+<div class="wrap">
+     <nav class="nav" style="width: 1800px;">
+     	<div class="log_in">
+                <table class="login_table">
+                    <tr>
+<!--                         <td th:if="${user_id}" th:text="${user_id} + '님 반갑습니다.'"></td> -->
+                        <td th:if="${user_id}">
+                        <span th:text="${user_id} + '님 반갑습니다.'"></span><br>
+   					 	<a th:href="@{logout}">로그아웃</a>
+   					 	</td>
+                    <td th:unless="${user_id}"><a th:href="@{login}" id="login">로그인</a></td>
+                    </tr>
+                </table>
+        </div>
+ 
+          <div class="logo">
+            <a th:href="@{mainpage}">
+              <h1>Green 도서관</h1>
+            </a>
+            <div style="margin-left: 400px;">
+            <form id="searchForm" action="search_list">
+				<select name="type" class="type">
+					<option value="" >===</option>
+					<option value="title">도서명</option>
+					<option value="author" >작가</option>
+				</select>	
+				<input type="text" name="keyword" class="keyword">
+				<button class="searchbtn">검색</button>
+			</form>
+            </div>
+          </div>
+
+        <div class="nav_div"> 
+          <div class="menu_list">
+            <div class="menu1" style="height: 50px;">
+              <table class="nav_table">
+                <tr>
+                  <th><button class="w-btn w-btn-indigo" type="button" onclick="fn_cat4()">추천도서</button></th>
+                </tr>
+              </table>
+            </div>
+            <div class="menu2" style="height: 50px;">
+              <table class="nav_table">
+                <tr>
+                  <th><button  class="w-btn w-btn-green" type="button" onclick="fn_cat()">신간도서</button></th>
+                </tr>
+              </table>
+            </div>
+            <div class="menu3" style="height: 50px;">
+              <table class="nav_table">
+                <tr>
+                  <th><button class="w-btn w-btn-green2" type="button" onclick="fn_cat3()">교과도서</button></th>
+                </tr>
+              </table>
+            </div>
+            <div class="menu4" style="height: 50px;">
+              <table class="nav_table">
+                <tr>
+                  <th><button onclick="location.href='board_list'" class="w-btn w-btn-brown" type="button">게시판</button></th>
+                </tr>
+              </table>
+            </div>
+            <div class="menu5" style="height: 50px;">
+              <table class="nav_table">
+                <tr>
+                  <th th:if="${user_id}">
+                  	<button onclick="fn_mypage()" class="w-btn w-btn-blue" type="button">내 서재</button>
+                  </th>
+                  <th th:unless="${user_id}">
+                  	<button onclick="fn_confirm()" href="#" class="w-btn w-btn-blue" type="button">내 서재</button>
+                  </th>
+                </tr>
+              </table>
+            </div>
+          </div>
+          </div>
+        </nav>
+ </div>
+</body>
+</html>

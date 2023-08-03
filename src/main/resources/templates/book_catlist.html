@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+font-family:"Times New Roman";
+background-color:#F5FFFA;
+}
+  #newsContainer {
+        width: 15%;
+        margin-right: 15%;
+    }
+ #sidebar {
+ 		margin-top:150px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background-color: #f1f1f1;
+/*         padding: 20px; */
+         overflow-y: auto; 
+    }
+    
+@media (max-width: 1000px) {
+        #sidebar {
+            display: none;
+        }
+
+        #newsContainer {
+            margin-right: 0; /* 사이드바가 없으므로 오른쪽 여백 제거 */
+            width: 100%; /* 뉴스 컨테이너를 전체 너비로 설정하여 창 가득 채우기 */
+        }
+    }
+.tab {
+	width:1800px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+	}
+	.tab td{
+
+	}
+	.tab tr{
+	border-top: 1px solid silver;
+	padding: 10px;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: #DEB887;
+	}
+	.tab img{
+	width: 300px;
+	height: 200px;
+	}
+	.btn{
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">  
+$(document).ready( function() {
+	
+$("#headers").load("nav");  
+$("#newsContainer").load("news"); 
+
+$("#4").hide();
+$("#1").hide();
+$("#3").hide();
+
+var book_cat = "[[${book_cat}]]";
+
+var book_catcount = "[[${book_catcount}]]";
+
+
+if(book_cat == 4){
+	$("#4").show();
+}else if(book_cat == 1){
+	$("#1").show();	
+}else{
+	$("#3").show();		
+}
+
+
+});
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br><br><br><br><br><br><br>
+<h1 align="center" id="4">추천도서</h1>
+<h1 align="center" id="1">신간도서</h1>
+<h1 align="center" id="3">교과도서</h1>
+<div align="right" style="width:1650px;">
+<button class="btn" onclick="location.href='mainpage'" th:text="메인화면가기"></button>
+&nbsp;&nbsp;&nbsp;&nbsp;
+도서수:<span th:text="${book_catcount}"></span>
+</div><br>
+<div align="center">
+	<table border="1" class="tab">
+			<tr th:each="dto : ${book_catlist}" style="display: inline-block;">
+				<td>
+  				<img th:src="'/image/'+ ${dto.book_image}"><br>
+				등록일 <span th:text="${#dates.format(dto.book_date, 'yyyy-MM-dd')}"></span><br>
+  				도서명 <a th:href="@{'book_user_view?book_seq=' + ${dto.book_seq}}" th:text="${dto.book_title}"></a><br>
+				저자&nbsp; <span th:text="${dto.book_author}"></span><br>
+<!-- 				<span th:text="${dto.book_description}"></span> -->
+			</tr>
+	</table>
+</div>
+
+  	<div id="sidebar">
+  		<div id="newsContainer">
+  		</div>
+  	</div>
+</body>
+</html>

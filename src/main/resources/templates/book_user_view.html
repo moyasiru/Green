@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+body{
+font-family:"Times New Roman";
+background-color:#F5FFFA;
+}
+.tab {
+	width:1000px;
+	border-collapse: collapse;
+	border-top:none;
+	border-right: none;
+ 	border-bottom: none; 
+	border-left: none;
+	font-size: 1.1em;
+	}
+	.tab td{
+
+	}
+	.tab tr{
+	padding: 10px;
+	}
+	.tab
+	a{
+	text-decoration: none;
+	color: #DEB887;
+	}
+	.tab img{
+	width: 80%;
+	height: 500px;
+	}
+.btn{
+	width:100px;	
+	height: 30px;
+	background-color: white;
+    border-radius: 10px;
+}
+.btn:hover{
+	background-color: aliceblue;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready( function() {
+
+	$("#headers").load("nav");  
+	
+	 var user_id = "[[${user_id}]]";
+	 
+	 console.log("현재 세션 ----->"+user_id);
+	  
+     $.ajax({
+       url:"board_userseq"
+        ,data:{user_id:user_id}
+        ,success:function(data){
+           alert("seq,rent_count 불러오기완료");
+           console.log("seq =="+data.user_seq);
+           console.log("rent_count =="+data.user_rent_count);
+           $("input[name='user_seq']").val(data.user_seq);
+           $("input[name='user_rent_count']").val(data.user_rent_count);
+        },
+        error: function() {
+			alert("오류발생");
+		}
+ 
+     });//end of click ajax
+     
+});
+
+function fn_submit() {
+	
+	if(!$("input[name='user_seq']").val()){
+		alert("로그인이 필요한 서비스입니다.");
+		return false;
+	}
+	if($("input[name='user_rent_count']").val()>="3"){
+		alert("최대 대출도서수는 3개입니다.");
+		return false;
+	}
+    var formData = new FormData($("#frm")[0]);
+     $.ajax({
+       url:"return_write"
+       ,processData: false
+       ,contentType: false
+        ,data:formData
+        ,type:"POST"
+        ,success:function(data){
+           alert("대출기간은 5일 입니다.");
+           
+           $.ajax({
+               url:"member_rent_count"
+               ,data: {user_seq: $("input[name='user_seq']").val()}
+               ,type: "POST"
+               ,success: function(data){
+              	 alert("member_rent_count 메서드 실행 성공");
+                   console.log("member_rent_count 메서드 실행 성공");
+      		             $.ajax({
+      		                 url:"book_rent"
+      		                 ,data: {book_seq: $("input[name='book_seq']").val()}
+      		                 ,type: "POST"
+      		                 ,success: function(data){
+      		                	 alert("book_rent 메서드 실행 성공");
+      		                     console.log("book_rent 메서드 실행 성공");
+      		                     location.reload();
+      		                 },
+      		                 error: function() {
+      		                	 alert("book_rent 메서드 실행 실패");
+      		                     console.log("book_rent 메서드 실행 실패");
+      		                 }
+      		             });
+               },
+               error: function() {
+              	 alert("member_rent_count 메서드 실행 실패");
+                   console.log("member_rent_count 메서드 실행 실패");
+               }
+           });
+           
+           
+        },
+        error: function() {
+			alert("오류발생");
+		}
+ 
+     });//end of click ajax
+     
+      
+  };   //end of click function
+  
+</script>
+</head>
+<body>
+<div id="headers"></div><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div align="center">
+  <form id="frm">
+	<table class="tab" >
+		<tr>
+			<td style="width: 60%;">
+    			<img th:src="'/image/'+ ${book_user_view.book_image}">
+   			</td>	
+			<td style="width: 30%;" colspan="6">도서일련번호 : <span th:text="${book_user_view.book_seq}"></span><br><br>
+			
+				도서명 : <span th:text="${book_user_view.book_title}"></span><br><br>
+		
+				작가 : <span th:text="${book_user_view.book_author}"></span><br><br>
+
+				설명 : <span th:text="${book_user_view.book_description}"></span><br><br>
+
+				등록일 : <span th:text="${#dates.format(book_user_view.book_date, 'yyMMdd')}"></span><br><br>
+
+				대여가능여부 : <span th:text="${book_user_view.book_rent}" style="color: red;"></span><br><br>
+
+				대출상태 : <span th:text="${book_user_view.book_state}"></span><br><br>
+			</td>   				
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<input type="button" value="대출신청" class="btn" onclick="fn_submit()" th:if="${book_user_view.book_rent == 'Y'}">
+				<input type="button" value="목록보기" class="btn" onclick="history.back()">
+				<input type="hidden" name="book_seq" th:value="${book_user_view.book_seq}"/>
+				<input type="hidden" name="user_seq"/>
+				<input type="hidden" name="user_rent_count"/>
+				<input type="hidden" name="pageNum" value="${pageMaker.pageNum}">
+				<input type="hidden" name="amount" value="${pageMaker.amount}">
+			</td>
+		</tr>
+	</table>
+  </form>
+ </div>
+</body>
+</html>

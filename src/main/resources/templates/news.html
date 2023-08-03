@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/new.css">
+</head>
+<body>
+<!-- style="display: flex; justify-content: center;" -->
+<div>
+    <div id="contents">
+        <div class="news-list">
+            <div th:each="news : ${news}" class="news-item">
+                    <img th:src="${news.image}" alt="news-image">
+                <a th:href="${news.url}" class="news-link">
+                <div class="title" th:text="${news.subject}"></div>
+                </a>
+                <div class="content" th:text="${news.shortContent}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
