@@ -251,4 +251,47 @@ Messaging System
 * 해당 db삭제
 
 
+<br>
 
+
+<h2>도서 목록</h2> 
+
+![image](https://github.com/moyasiru/Green/assets/130022940/5cc21044-1f7c-4c6b-9e84-e90cb8d2a332)
+
+
+<br><br>
+
+* 등록되어있는 도서 List 조회
+* 도서명으로 검색기능 구현
+* 도서일련번호 클릭시 상세페이지로 이동
+
+
+<br><br>
+
+
+![image](https://github.com/moyasiru/Green/assets/130022940/c13934fe-b195-4928-b1db-25149b943f7b)
+
+
+<br><br>
+
+* 수정,삭제 구현
+* 삭제시 db와 해당 사진파일 삭제 처리
+
+
+<br><br>
+
+
+<h2>회원 목록</h2> 
+
+
+![image](https://github.com/moyasiru/Green/assets/130022940/f6125d9e-fa86-4d93-ab3f-e8693b22225a)
+
+* 회원정보 조회 가능
+
+
+<br><br>
+
+
+><h1>후기</h1>
+
+여러가지 언어와 툴에 적응 하기위해 배우지않은 새로운 언어와 환경에서 진행해보고싶었습니다. kafka 와thymeleaf 등  여러가지 플러그인과 사용하며 새로운 어떤 기능들을 구현해나가는데 있어 자신감이 생기고 성취감이 크게 느껴졌습니다. 이제 로컬환경이 아닌 aws나 오라클클라우드 등 배포까지 하며 계속해서 유지보수를 하며 실질적으로 쓸수 있는 서비스를 만들고싶다는 생각이 들었습니다.
